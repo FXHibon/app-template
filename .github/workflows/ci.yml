@@ -15,18 +15,9 @@ permissions:
   contents: read
 
 jobs:
-  iac:
-    name: Run IaC Custom Action
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Execute Custom IaC Action
-        uses: fxhibon/iac@master
-        # If the custom action requires parameters/secrets, they can be configured here:
-        # with:
-        #   some_parameter: 'value'
-        # env:
-        #   SOME_ENV_VAR: ${{ secrets.SOME_SECRET }}
+  docker-build:
+    uses: fxhibon/vps-iac/.github/workflows/docker-build-push.yml@master
+    # You can pass inputs or secrets if needed:
+    # with:
+    #   environment: 'production'
+    # secrets: inherit
