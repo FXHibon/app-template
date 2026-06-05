@@ -1,4 +1,4 @@
-name: IaC Pipeline
+name: docker-build-push
 
 on:
   push:
@@ -17,7 +17,6 @@ permissions:
 jobs:
   docker-build:
     uses: fxhibon/vps-iac/.github/workflows/docker-build-push.yml@master
-    # You can pass inputs or secrets if needed:
-    # with:
-    #   environment: 'production'
-    # secrets: inherit
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
