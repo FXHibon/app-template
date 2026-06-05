@@ -1,0 +1,30 @@
+name: IaC Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+# Limit permissions to what is needed
+permissions:
+  contents: read
+
+jobs:
+  iac:
+    name: Run IaC Custom Action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Execute Custom IaC Action
+        uses: fxhibon/iac@master
+        # If the custom action requires parameters/secrets, they can be configured here:
+        # with:
+        #   some_parameter: 'value'
+        # env:
+        #   SOME_ENV_VAR: ${{ secrets.SOME_SECRET }}
