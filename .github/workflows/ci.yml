@@ -15,48 +15,10 @@ permissions:
   contents: read
 
 jobs:
-  check-secrets:
-    runs-on: ubuntu-latest
-    outputs:
-      has-secrets: ${{ steps.check.outputs.defined }}
-    steps:
-      - id: check
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: |
-          if [ -n "$DOCKERHUB_USERNAME" ] && [ -n "$DOCKERHUB_TOKEN" ]; then
-            echo "defined=true" >> $GITHUB_OUTPUT
-          else
-            echo "defined=false" >> $GITHUB_OUTPUT
-          fi
-
-  docker-build-push:
-    needs: check-secrets
-    if: needs.check-secrets.outputs.has-secrets == 'true'
+  docker-build:
     uses: FXHibon/iac/.github/workflows/docker-build-push.yml@master
     secrets:
       dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
       dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  docker-build-local:
-    needs: check-secrets
-    if: needs.check-secrets.outputs.has-secrets != 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker Image (Verify)
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: false
 
