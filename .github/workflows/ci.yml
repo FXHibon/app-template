@@ -9,14 +9,14 @@ on:
   pull_request:
     branches:
       - master
-
+  workflow_dispatch:
 # Limit permissions to what is needed
 permissions:
   contents: read
 
 jobs:
   docker-build:
-    uses: fxhibon/vps-iac/.github/workflows/docker-build-push.yml@master
+    uses: FXHibon/iac/.github/workflows/docker-build-push.yml@master
     secrets:
       dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
       dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
