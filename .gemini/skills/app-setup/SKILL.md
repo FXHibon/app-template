@@ -127,6 +127,34 @@ If the `DOCKERHUB_TOKEN` variable is missing or the CLI commands fail (e.g., bec
 
 ---
 
+### Step 7. Configure Repository Settings (Projects, Wiki, and Branch Protection)
+
+After creating the repository, configure its options and enable branch protection on the `master` branch.
+
+To do this automatically:
+1. Execute the helper script [configure_repo.sh](./gemini/skills/app-setup/scripts/configure_repo.sh) located in this skill:
+   ```bash
+   ./.gemini/skills/app-setup/scripts/configure_repo.sh
+   ```
+
+This script will use the `gh` CLI to:
+- Disable GitHub Projects
+- Disable GitHub Wiki
+- Enable a classic branch protection rule on the `master` branch:
+  - Require a pull request before merging (with `0` required approvals)
+  - Require status checks to pass, explicitly requiring the `docker-build / Build & Push Docker Image` status check
+  - Require branches to be up to date before merging (`strict: true`)
+
+If the CLI commands fail (e.g., due to permissions or missing CLI authentication), instruct the user to configure these settings manually under **Settings**:
+- **General**: Uncheck **Wikis** and **Projects** under the "Features" section.
+- **Branches**: Add a branch protection rule for `master` with:
+  - **Require a pull request before merging** enabled (with required approvals set to 0 or disabled).
+  - **Require status checks to pass before merging** enabled:
+    - **Require branches to be up to date before merging** checked.
+    - Status check search: add **docker-build / Build & Push Docker Image**.
+
+---
+
 ## Skill Templates & Resources
 
 Use the template assets located in the `resources` directory of this skill:
