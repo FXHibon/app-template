@@ -2,7 +2,7 @@
 name: app-setup
 description: |
   Initialize and configure a project codebase created from the app-template.
-  Use this skill to configure the application's production Dockerfile, local docker-compose testing environment, README.md, and AGENTS.md developer guide.
+  Use this skill to configure the application's production Dockerfile, local docker-compose testing environment, README.md, AGENTS.md developer guide, and repository secrets.
 
   Trigger immediately when:
   - The repository has just been created from the template and contains no application code yet.
@@ -17,7 +17,7 @@ description: |
 
 # App Setup Skill
 
-This skill guides the agent through initializing a new application in a repository cloned/instantiated from the `app-template`. It ensures the repository has a production-ready Dockerfile, a local test environment via Docker Compose, a revised README.md, and an AGENTS.md file to onboard future agent sessions.
+This skill guides the agent through initializing a new application in a repository cloned/instantiated from the `app-template`. It ensures the repository has a production-ready Dockerfile, a local test environment via Docker Compose, a revised README.md, an AGENTS.md file to onboard future agent sessions, and configured repository secrets.
 
 ## When to Use
 
@@ -105,6 +105,25 @@ Replace the default repository `README.md` with one customized for the specific 
 - **Testing**: How to run unit and integration tests (including how to run tests locally via `docker-compose.test.yml`).
 - **Docker Production Build & Run**: Commands to build the production image locally and test it.
 - **CI/CD Integration**: A section detailing the GitHub Action workflow (`ci.yml`) and how it builds/pushes images using the `FXHibon/iac` setup.
+
+---
+
+### Step 6. Automatically Configure Repository Secrets (CI/CD Setup)
+
+When launching the repository from the template, repository-level secrets are not copied over automatically. You must configure them in the new repository to ensure the CI/CD pipeline (`ci.yml`) executes successfully.
+
+To do this automatically:
+1. Ensure the `DOCKERHUB_TOKEN` environment variable is defined in your environment.
+2. Execute the helper script [configure_secrets.sh](./gemini/skills/app-setup/scripts/configure_secrets.sh) located in this skill:
+   ```bash
+   ./.gemini/skills/app-setup/scripts/configure_secrets.sh
+   ```
+
+This script will automatically configure both the **GitHub Actions secrets** and **Dependabot secrets** for the repository using `fxhibon` as the Docker Hub username and the value of your local `$DOCKERHUB_TOKEN` environment variable.
+
+If the `DOCKERHUB_TOKEN` variable is missing or the CLI commands fail (e.g., because of auth or CLI missing issues), warn the user and instruct them to set the secrets manually under:
+- **Actions Secrets**: `Settings > Secrets and variables > Actions > New repository secret`
+- **Dependabot Secrets**: `Settings > Secrets and variables > Dependabot > New repository secret`
 
 ---
 
